@@ -32,11 +32,9 @@ downloaded one or your preferred distribution isn't on the list.
 
 %build
 cd src/unetbootin/
-
-sed -i '/^RESOURCES/d' unetbootin.pro
 lupdate unetbootin.pro
 lrelease unetbootin.pro
-qmake "DEFINES += NOSTATIC" "RESOURCES -= unetbootin.qrc"
+qmake QMAKE_LFLAGS="%{ldflags}" QMAKE_CXXFLAGS_RELEASE="%{optflags} -Wall -W -D_REENTRANT"
 %make
 
 %install
