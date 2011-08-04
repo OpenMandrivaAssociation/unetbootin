@@ -1,13 +1,13 @@
-%global rel 393
-
 Name:		unetbootin
 Version:	0
-Release:	%mkrel 0.%{rel}bzr
+%define	gitdate	20110804
+Release:	0.%{gitdate}.1
 Summary:	Create bootable Live USB drives for a variety of Linux distributions
 Group:		System/Configuration/Hardware
 License:	GPLv2+
 URL:		http://unetbootin.sourceforge.net/
-Source0:	http://downloads.sourceforge.net/%{name}/%{name}-source-%{rel}.tar.gz
+Source0:	http://downloads.sourceforge.net/%{name}/%{name}-%{gitdate}.tar.xz
+Patch0:		unetbootin-20110804-mdkconf.patch
 BuildRoot:	%(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 # Syslinux is only available on x86 architectures
 ExclusiveArch:	%{ix86} x86_64
@@ -22,52 +22,43 @@ Requires:	syslinux
 UNetbootin allows you to create bootable Live USB drives for a variety of
 Linux distributions from Windows or Linux, without requiring you to burn a CD.
 You can either let it download one of the many distributions supported
-out-of-the-box for you, or supply your own Linux .iso file if you've already
+out-of-the-box for you, or supply your own linux .iso file if you've already
 downloaded one or your preferred distribution isn't on the list.
 
 %prep
-%setup -q -c 
-# Fix EOL encoding
-for file in README.TXT; do
- sed "s|\r||g" $file > $file.new && \
- touch -r $file $file.new && \
- mv $file.new $file
-done
-# Fix desktop file
-sed -i '/^Version/d' unetbootin.desktop
-sed -i '/\[en_US\]/d' unetbootin.desktop
-sed -i 's|/usr/bin/unetbootin|unetbootin|g' unetbootin.desktop
+%setup -q -n %{name}-%{gitdate}
+%patch0 -p1 -b .mdkconf~
+
+# fix desktop file
+sed -i '/^version/d' src/unetbootin/unetbootin.desktop
+sed -i '/\[en_us\]/d' src/unetbootin/unetbootin.desktop
+sed -i 's|/usr/bin/unetbootin|unetbootin|g' src/unetbootin/unetbootin.desktop
 
 %build
+cd src/unetbootin/
 
-# Ugh, there's no macro for running lrelease and on RHEL the default is qt-3.3
-%if 0%{?rhel} == 5
-# Generate .qm files
-%{_libdir}/qt4/bin/lrelease unetbootin.pro
-%{_libdir}/qt4/bin/qmake
-%else
-# Generate .qm files
+sed -i '/^RESOURCES/d' unetbootin.pro
+lupdate unetbootin.pro
 lrelease unetbootin.pro
-qmake
-%endif
-
+qmake "DEFINES += NOSTATIC" "RESOURCES -= unetbootin.qrc"
 make %{?_smp_mflags}
 
 %install
 rm -rf %{buildroot} 
-install -D -p -m 755 unetbootin %{buildroot}%{_bindir}/unetbootin
+install -D -p -m 755 src/unetbootin/unetbootin %{buildroot}%{_bindir}/unetbootin
+install -d -m755 %{buildroot}%{_datadir}/unetbootin/
 # Install desktop file
-desktop-file-install --vendor="" --remove-category=Application --dir=%{buildroot}%{_datadir}/applications unetbootin.desktop
-# Install localization files
-install -d %{buildroot}%{_datadir}/unetbootin
-install -c -p -m 644 unetbootin_*.qm %{buildroot}%{_datadir}/unetbootin/
+desktop-file-install --vendor="" --remove-category=Application --dir=%{buildroot}%{_datadir}/applications src/unetbootin/unetbootin.desktop
+install -c -p -m 644 src/unetbootin/unetbootin_*.qm %{buildroot}%{_datadir}/unetbootin/
+
+%find_lang unetbootin
 
 %clean
 rm -rf %{buildroot}
 
-%files
+%files -f unetbootin.lang
 %defattr(-,root,root,-)
-%doc README.TXT
+%doc readme
 %{_bindir}/unetbootin
 %{_datadir}/unetbootin/
 %{_datadir}/applications/unetbootin.desktop
