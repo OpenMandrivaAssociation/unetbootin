@@ -8,6 +8,7 @@ License:	GPLv2+
 URL:		http://unetbootin.sourceforge.net/
 Source0:	http://downloads.sourceforge.net/%{name}/%{name}-%{gitdate}.tar.xz
 Patch0:		unetbootin-20110804-mdkconf.patch
+Patch1:		unetbootin-20110804-fix-broken-desktop-file.patch
 BuildRoot:	%(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 # Syslinux is only available on x86 architectures
 ExclusiveArch:	%{ix86} x86_64
@@ -28,11 +29,7 @@ downloaded one or your preferred distribution isn't on the list.
 %prep
 %setup -q -n %{name}-%{gitdate}
 %patch0 -p1 -b .mdkconf~
-
-# fix desktop file
-sed -i '/^version/d' src/unetbootin/unetbootin.desktop
-sed -i '/\[en_us\]/d' src/unetbootin/unetbootin.desktop
-sed -i 's|/usr/bin/unetbootin|unetbootin|g' src/unetbootin/unetbootin.desktop
+%patch1 -p1 -b .fixed_desktop~
 
 %build
 cd src/unetbootin/
