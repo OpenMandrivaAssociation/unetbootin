@@ -9,7 +9,6 @@ URL:		http://unetbootin.sourceforge.net/
 Source0:	http://downloads.sourceforge.net/%{name}/%{name}-%{gitdate}.tar.xz
 Patch0:		unetbootin-20110804-mdkconf.patch
 Patch1:		unetbootin-20110804-fix-broken-desktop-file.patch
-BuildRoot:	%(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 # Syslinux is only available on x86 architectures
 ExclusiveArch:	%{ix86} x86_64
 
@@ -38,25 +37,19 @@ sed -i '/^RESOURCES/d' unetbootin.pro
 lupdate unetbootin.pro
 lrelease unetbootin.pro
 qmake "DEFINES += NOSTATIC" "RESOURCES -= unetbootin.qrc"
-make %{?_smp_mflags}
+%make
 
 %install
-rm -rf %{buildroot} 
-install -D -p -m 755 src/unetbootin/unetbootin %{buildroot}%{_bindir}/unetbootin
+install -p -m755 -D src/unetbootin/unetbootin %{buildroot}%{_bindir}/unetbootin
 install -d -m755 %{buildroot}%{_datadir}/unetbootin/
 # Install desktop file
 desktop-file-install --vendor="" --remove-category=Application --dir=%{buildroot}%{_datadir}/applications src/unetbootin/unetbootin.desktop
-install -c -p -m 644 src/unetbootin/unetbootin_*.qm %{buildroot}%{_datadir}/unetbootin/
+install -p -m644 src/unetbootin/unetbootin_*.qm %{buildroot}%{_datadir}/unetbootin/
 
 %find_lang unetbootin
 
-%clean
-rm -rf %{buildroot}
-
 %files -f unetbootin.lang
-%defattr(-,root,root,-)
 %doc readme
 %{_bindir}/unetbootin
 %{_datadir}/unetbootin/
 %{_datadir}/applications/unetbootin.desktop
-
