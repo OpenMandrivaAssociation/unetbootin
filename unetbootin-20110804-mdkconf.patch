@@ -1,0 +1,11 @@
+--- unetbootin-20110804/src/unetbootin/qmake-linux.mdkconf~	2011-08-04 01:23:48.000000000 +0200
++++ unetbootin-20110804/src/unetbootin/qmake-linux	2011-08-04 06:23:22.553264167 +0200
+@@ -1,6 +1,5 @@
+ #!/bin/sh
+ 
+-qtwind="$(pwd)/qt4-win"
+-qtx11d="$(pwd)/qt4-x11"
++qtx11d="/usr/lib/qt4/"
+ 
+-$qtx11d/bin/qmake -config release -spec $qtx11d/mkspecs/linux-g++-32 "DEFINES += STATICLINUX" "QMAKE_INCDIR_QT = $qtx11d/include" "QMAKE_LIBDIR_QT = $qtx11d/lib" "QMAKE_QMAKE = $qtx11d/bin/qmake" "QMAKE_MOC = $qtx11d/bin/moc" "QMAKE_UIC = $qtx11d/bin/uic" "QMAKE_RCC = $qtx11d/bin/rcc" "RESOURCES += unetbootin-linux.qrc" "$@"
++$qtx11d/bin/qmake QMAKE_CFLAGS_RELEASE=$CFLAGS QMAQMAKE_CFLAGS_RELEASEKE_LFLAGS=$LDFLAGS QMAKE_LFLAGS_PLUGIN=$LDFLAGS -config release -spec $qtx11d/mkspecs/linux-g++ "DEFINES += STATICLINUX" "QMAKE_INCDIR_QT = $qtx11d/include" "QMAKE_LIBDIR_QT = $qtx11d/lib" "QMAKE_QMAKE = $qtx11d/bin/qmake" "QMAKE_MOC = $qtx11d/bin/moc" "QMAKE_UIC = $qtx11d/bin/uic" "QMAKE_RCC = $qtx11d/bin/rcc" "RESOURCES += unetbootin-linux.qrc" "$@"
