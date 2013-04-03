@@ -1,4 +1,5 @@
 %global rel 581
+%define debug_package %{nil}
 
 Name:		unetbootin
 Version:	0
