@@ -1,9 +1,8 @@
 %global rel 581
-%define debug_package %{nil}
 
 Name:		unetbootin
 Version:	0
-Release:	2.%{rel}
+Release:	4.%{rel}
 Summary:	Create bootable Live USB drives for a variety of Linux distributions
 Group:		System/Configuration/Hardware
 License:	GPLv2+
@@ -63,10 +62,24 @@ install -D -c -p -m 644 unetbootin_256.png %{buildroot}%{_datadir}/icons/hicolor
 
 # setup link for consolehelper support to allow root access
 install -d %{buildroot}%{_bindir}
-pushd %{buildroot}%{_bindir}
-ln -s consolehelper %{name}
-popd
+install -d %{buildroot}%{_sysconfdir}/pam.d
+install -d %{buildroot}%{_sysconfdir}/security/console.apps
 
+ln -sf consolehelper %{buildroot}%{_bindir}/%{name}
+
+cat > %{buildroot}%{_sysconfdir}/pam.d/%{name} <<EOF
+#%PAM-1.0
+auth            include         config-util
+account         include         config-util
+session         include         config-util
+EOF
+
+cat > %{buildroot}%{_sysconfdir}/security/console.apps/%{name} <<EOF
+USER=root
+PROGRAM=/usr/sbin/%{name}
+FALLBACK=false
+SESSION=true
+EOF
 
 %files
 %doc README.TXT
@@ -75,42 +88,5 @@ popd
 %{_datadir}/unetbootin/
 %{_datadir}/applications/rosa-unetbootin.desktop
 %{_datadir}/icons/hicolor/*/*
-
-
-
-
-%changelog
-
-* Tue Sep 18 2012 sander85 <sander85> 0-2.581.mga3
-+ Revision: 295942
-- New release: 581
-
-* Mon Jul 23 2012 sander85 <sander85> 0-2.578.mga3
-+ Revision: 273726
-- new release: 578
-
-* Sat Mar 03 2012 sander85 <sander85> 0-2.568.mga2
-+ Revision: 217224
-- new version
-
-* Sat Jan 07 2012 sander85 <sander85> 0-2.563.mga2
-+ Revision: 193008
-- new release: 563
-
-* Fri Oct 07 2011 sander85 <sander85> 0-2.555.mga2
-+ Revision: 152719
-- add extlinux as a requirement as it was splitted from syslinux
-
-* Thu Oct 06 2011 sander85 <sander85> 0-1.555.mga2
-+ Revision: 152211
-- switch to tarball source
-
-* Sat Oct 01 2011 sander85 <sander85> 0-0.555.mga2
-+ Revision: 150665
-- fix bug #1443
-- new version: 555
-
-* Sat Apr 30 2011 sander85 <sander85> 0-0.549.mga1
-+ Revision: 93728
-- imported package unetbootin
-
+%{_sysconfdir}/pam.d/%{name}
+%{_sysconfdir}/security/console.apps/%{name}
