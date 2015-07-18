@@ -1,4 +1,4 @@
-%global rel 581
+%global rel 608
 
 Name:		unetbootin
 Version:	0
@@ -8,9 +8,6 @@ Group:		System/Configuration/Hardware
 License:	GPLv2+
 URL:		http://unetbootin.sourceforge.net/
 Source0:	http://downloads.sourceforge.net/%{name}/%{name}-source-%{rel}.tar.gz
-Patch1:		rosa-config.patch
-# Syslinux is only available on x86 architectures
-ExclusiveArch:	%{ix86} x86_64
 
 BuildRequires:	desktop-file-utils
 BuildRequires:	qt4-devel
@@ -30,10 +27,8 @@ downloaded one or your preferred distribution isn't on the list.
 
 %prep
 %setup -q -c
-%apply_patches
 
 %build
-mv unetbootin.desktop rosa-unetbootin.desktop
 lupdate unetbootin.pro
 lrelease unetbootin.pro
 qmake
@@ -45,7 +40,7 @@ qmake
 rm -rf %{buildroot} 
 install -D -p -m 755 unetbootin %{buildroot}%{_sbindir}/unetbootin
 # Install desktop file
-desktop-file-install --vendor="" --remove-key=Version --remove-key=Name[en_US] --remove-key=GenericName[en_US] --remove-key=Comment[en_US] --remove-category=Application --dir=%{buildroot}%{_datadir}/applications rosa-unetbootin.desktop
+desktop-file-install --vendor="" --remove-key=Version --remove-key=Name[en_US] --remove-key=GenericName[en_US] --remove-key=Comment[en_US] --remove-category=Application --dir=%{buildroot}%{_datadir}/applications unetbootin.desktop
 # Install localization files
 install -d %{buildroot}%{_datadir}/unetbootin
 install -c -p -m 644 unetbootin_*.qm %{buildroot}%{_datadir}/unetbootin/
@@ -86,7 +81,7 @@ EOF
 %{_bindir}/unetbootin
 %{_sbindir}/unetbootin
 %{_datadir}/unetbootin/
-%{_datadir}/applications/rosa-unetbootin.desktop
+%{_datadir}/applications/unetbootin.desktop
 %{_datadir}/icons/hicolor/*/*
 %{_sysconfdir}/pam.d/%{name}
 %{_sysconfdir}/security/console.apps/%{name}
