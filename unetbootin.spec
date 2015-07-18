@@ -29,6 +29,9 @@ downloaded one or your preferred distribution isn't on the list.
 %setup -q -c
 
 %build
+export CC=gcc
+export CXX=g++
+
 lupdate unetbootin.pro
 lrelease unetbootin.pro
 qmake
