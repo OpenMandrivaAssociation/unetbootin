@@ -1,4 +1,4 @@
-%global rel 608
+%global rel 613
 
 Name:		unetbootin
 Version:	0
@@ -8,7 +8,7 @@ Group:		System/Configuration/Hardware
 License:	GPLv2+
 URL:		http://unetbootin.sourceforge.net/
 Source0:	http://downloads.sourceforge.net/%{name}/%{name}-source-%{rel}.tar.gz
-
+Patch1:		clang.patch
 BuildRequires:	desktop-file-utils
 BuildRequires:	qt4-devel
 # Not picked up automatically, required for operation
@@ -27,6 +27,7 @@ downloaded one or your preferred distribution isn't on the list.
 
 %prep
 %setup -q -c
+%apply_patches
 
 %build
 export CC=gcc
