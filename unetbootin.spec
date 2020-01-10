@@ -33,7 +33,7 @@ downloaded one or your preferred distribution isn't on the list.
 
 %prep
 %setup -q -c
-%apply_patches
+%autopatch -p1
 
 %build
 export QMAKE=%{_bindir}/qmake-qt5
