@@ -1,7 +1,7 @@
 %global rel 661
 
 Name:		unetbootin
-Version:	675
+Version:	677
 Release:	1
 Summary:	Create bootable Live USB drives for a variety of Linux distributions
 Group:		System/Configuration/Hardware
