@@ -21,7 +21,7 @@ BuildRequires:  pkgconfig(Qt5Widgets)
 # Not picked up automatically, required for operation
 Recommends:	extlinux
 Requires:	p7zip
-Requires:	syslinux
+Recommends:	syslinux
 Requires:	usermode
 
 %description
