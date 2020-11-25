@@ -13,8 +13,13 @@ BuildRequires:	desktop-file-utils
 BuildRequires:	qt5-linguist-tools
 BuildRequires:	qt5-devel
 BuildRequires:	qmake5
+BuildRequires:  pkgconfig(Qt5Core)
+BuildRequires:  pkgconfig(Qt5Gui)
+BuildRequires:  pkgconfig(Qt5Network)
+BuildRequires:  pkgconfig(Qt5Widgets)
+
 # Not picked up automatically, required for operation
-#Requires:	extlinux
+Recommends:	extlinux
 Requires:	p7zip
 Requires:	syslinux
 Requires:	usermode
