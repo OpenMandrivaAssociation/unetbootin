@@ -1,24 +1,25 @@
-%global rel 661
+%global rel 700
 
 Name:		unetbootin
-Version:	681
+Version:	700
 Release:	1
 Summary:	Create bootable Live USB drives for a variety of Linux distributions
 Group:		System/Configuration/Hardware
 License:	GPLv2+
 URL:		http://unetbootin.sourceforge.net/
 Source0:	https://github.com/unetbootin/unetbootin/releases/download/%{rel}/unetbootin-source-%{rel}.tar.gz
-# Qt 5 port
-Patch0:		https://github.com/unetbootin/unetbootin/pull/137/commits/d8266c51317d279caf8f6a0f595dc2642014b12b.patch
-Patch1:		https://github.com/unetbootin/unetbootin/pull/137/commits/e5ae50b8336b115611478af0bf036c3c7b76274d.patch
-Patch2:		https://github.com/unetbootin/unetbootin/pull/137/commits/879f90846abf164f1521c23e494bda986653a1e4.patch
-Patch3:		https://github.com/unetbootin/unetbootin/pull/137/commits/9cc0841af5d129832d8e2df87355a53f45fca417.patch
+
 BuildRequires:	desktop-file-utils
 BuildRequires:	qt5-linguist-tools
 BuildRequires:	qt5-devel
 BuildRequires:	qmake5
+BuildRequires:  pkgconfig(Qt5Core)
+BuildRequires:  pkgconfig(Qt5Gui)
+BuildRequires:  pkgconfig(Qt5Network)
+BuildRequires:  pkgconfig(Qt5Widgets)
+
 # Not picked up automatically, required for operation
-#Requires:	extlinux
+Recommends:	extlinux
 Requires:	p7zip
 Requires:	syslinux
 Requires:	usermode
