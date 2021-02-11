@@ -1,7 +1,7 @@
-%global rel 700
+%global rel 702
 
 Name:		unetbootin
-Version:	700
+Version:	702
 Release:	1
 Summary:	Create bootable Live USB drives for a variety of Linux distributions
 Group:		System/Configuration/Hardware
