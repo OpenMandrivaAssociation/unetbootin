@@ -47,9 +47,19 @@ qmake-qt5 *.pro
 
 %install
 rm -rf %{buildroot} 
-install -D -p -m 755 unetbootin %{buildroot}%{_sbindir}/unetbootin
+install -D -p -m 0755 %{name} %{buildroot}%{_libexecdir}/%{name}
+
 # Install desktop file
-desktop-file-install --vendor="" --remove-key=Version --remove-key=Name[en_US] --remove-key=GenericName[en_US] --remove-key=Comment[en_US] --remove-category=Application --dir=%{buildroot}%{_datadir}/applications unetbootin.desktop
+desktop-file-install --vendor="" \
+	--remove-key=Version \
+	--remove-key=Name[en_US] \
+	--remove-key=GenericName[en_US] \
+	--remove-key=Comment[en_US] \
+	--remove-category=Application \
+	--set-key=Exec --set-value=%{name} \
+	--dir=%{buildroot}%{_datadir}/applications \
+	unetbootin.desktop
+
 # Install localization files
 install -d %{buildroot}%{_datadir}/unetbootin
 install -c -p -m 644 unetbootin_*.qm %{buildroot}%{_datadir}/unetbootin/
@@ -64,33 +74,22 @@ install -D -c -p -m 644 unetbootin_128.png %{buildroot}%{_datadir}/icons/hicolor
 install -D -c -p -m 644 unetbootin_192.png %{buildroot}%{_datadir}/icons/hicolor/192x192/apps/unetbootin.png
 install -D -c -p -m 644 unetbootin_256.png %{buildroot}%{_datadir}/icons/hicolor/256x256/apps/unetbootin.png
 
-# setup link for consolehelper support to allow root access
-install -d %{buildroot}%{_bindir}
-install -d %{buildroot}%{_sysconfdir}/pam.d
-install -d %{buildroot}%{_sysconfdir}/security/console.apps
-
-ln -sf consolehelper %{buildroot}%{_bindir}/%{name}
-
-cat > %{buildroot}%{_sysconfdir}/pam.d/%{name} <<EOF
-#%PAM-1.0
-auth            include         config-util
-account         include         config-util
-session         include         config-util
-EOF
-
-cat > %{buildroot}%{_sysconfdir}/security/console.apps/%{name} <<EOF
-USER=root
-PROGRAM=/usr/sbin/%{name}
-FALLBACK=false
-SESSION=true
+# Policy Kit support for nice root access
+%__mkdir_p %{buildroot}%{_bindir}
+cat >%{buildroot}%{_bindir}/%{name} <<EOF
+#!/bin/sh
+if  [[ "\$UID" != "0" ]] ; then
+    %{_bindir}/pkexec %{_libexecdir}/%{name} "\$@"
+    exit \$?
+fi
+exec %{_libexecdir}/%{name} "\$@"
 EOF
 
 %files
 %doc README.TXT
-%{_bindir}/unetbootin
-%{_sbindir}/unetbootin
+%attr(0755,root,root) %{_bindir}/%{name}
+%{_libexecdir}/%{name}
 %{_datadir}/unetbootin/
 %{_datadir}/applications/unetbootin.desktop
 %{_datadir}/icons/hicolor/*/*
-%{_sysconfdir}/pam.d/%{name}
 %{_sysconfdir}/security/console.apps/%{name}
