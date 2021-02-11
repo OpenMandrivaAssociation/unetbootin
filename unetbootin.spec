@@ -1,13 +1,14 @@
-%global rel 700
+%global rel 702
 
 Name:		unetbootin
-Version:	700
+Version:	702
 Release:	1
 Summary:	Create bootable Live USB drives for a variety of Linux distributions
 Group:		System/Configuration/Hardware
 License:	GPLv2+
 URL:		http://unetbootin.sourceforge.net/
 Source0:	https://github.com/unetbootin/unetbootin/releases/download/%{rel}/unetbootin-source-%{rel}.tar.gz
+Patch0:         %{name}-desktop.patch
 
 BuildRequires:	desktop-file-utils
 BuildRequires:	qt5-linguist-tools
@@ -47,9 +48,12 @@ qmake-qt5 *.pro
 
 %install
 rm -rf %{buildroot} 
-install -D -p -m 755 unetbootin %{buildroot}%{_sbindir}/unetbootin
-# Install desktop file
-desktop-file-install --vendor="" --remove-key=Version --remove-key=Name[en_US] --remove-key=GenericName[en_US] --remove-key=Comment[en_US] --remove-category=Application --dir=%{buildroot}%{_datadir}/applications unetbootin.desktop
+install -D -m 0755 %{name} %{buildroot}%{_sbindir}/%{name}
+install -d -m 0755 %{buildroot}%{_datadir}/%{name}
+
+install -D -m 0644 %{name}.desktop %{buildroot}%{_datadir}/applications/%{name}.desktop
+
+
 # Install localization files
 install -d %{buildroot}%{_datadir}/unetbootin
 install -c -p -m 644 unetbootin_*.qm %{buildroot}%{_datadir}/unetbootin/
@@ -64,33 +68,9 @@ install -D -c -p -m 644 unetbootin_128.png %{buildroot}%{_datadir}/icons/hicolor
 install -D -c -p -m 644 unetbootin_192.png %{buildroot}%{_datadir}/icons/hicolor/192x192/apps/unetbootin.png
 install -D -c -p -m 644 unetbootin_256.png %{buildroot}%{_datadir}/icons/hicolor/256x256/apps/unetbootin.png
 
-# setup link for consolehelper support to allow root access
-install -d %{buildroot}%{_bindir}
-install -d %{buildroot}%{_sysconfdir}/pam.d
-install -d %{buildroot}%{_sysconfdir}/security/console.apps
-
-ln -sf consolehelper %{buildroot}%{_bindir}/%{name}
-
-cat > %{buildroot}%{_sysconfdir}/pam.d/%{name} <<EOF
-#%PAM-1.0
-auth            include         config-util
-account         include         config-util
-session         include         config-util
-EOF
-
-cat > %{buildroot}%{_sysconfdir}/security/console.apps/%{name} <<EOF
-USER=root
-PROGRAM=/usr/sbin/%{name}
-FALLBACK=false
-SESSION=true
-EOF
-
 %files
 %doc README.TXT
-%{_bindir}/unetbootin
-%{_sbindir}/unetbootin
-%{_datadir}/unetbootin/
+%{_sbindir}/*
+%{_datadir}/%{name}
 %{_datadir}/applications/unetbootin.desktop
 %{_datadir}/icons/hicolor/*/*
-%{_sysconfdir}/pam.d/%{name}
-%{_sysconfdir}/security/console.apps/%{name}
