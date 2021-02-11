@@ -8,6 +8,7 @@ Group:		System/Configuration/Hardware
 License:	GPLv2+
 URL:		http://unetbootin.sourceforge.net/
 Source0:	https://github.com/unetbootin/unetbootin/releases/download/%{rel}/unetbootin-source-%{rel}.tar.gz
+Patch0:         %{name}-desktop.patch
 
 BuildRequires:	desktop-file-utils
 BuildRequires:	qt5-linguist-tools
@@ -47,18 +48,11 @@ qmake-qt5 *.pro
 
 %install
 rm -rf %{buildroot} 
-install -D -p -m 0755 %{name} %{buildroot}%{_libexecdir}/%{name}
+install -D -m 0755 %{name} %{buildroot}%{_sbindir}/%{name}
+install -d -m 0755 %{buildroot}%{_datadir}/%{name}
 
-# Install desktop file
-desktop-file-install --vendor="" \
-	--remove-key=Version \
-	--remove-key=Name[en_US] \
-	--remove-key=GenericName[en_US] \
-	--remove-key=Comment[en_US] \
-	--remove-category=Application \
-	--set-key=Exec --set-value=%{name} \
-	--dir=%{buildroot}%{_datadir}/applications \
-	unetbootin.desktop
+install -D -m 0644 %{name}.desktop %{buildroot}%{_datadir}/applications/%{name}.desktop
+
 
 # Install localization files
 install -d %{buildroot}%{_datadir}/unetbootin
@@ -74,21 +68,9 @@ install -D -c -p -m 644 unetbootin_128.png %{buildroot}%{_datadir}/icons/hicolor
 install -D -c -p -m 644 unetbootin_192.png %{buildroot}%{_datadir}/icons/hicolor/192x192/apps/unetbootin.png
 install -D -c -p -m 644 unetbootin_256.png %{buildroot}%{_datadir}/icons/hicolor/256x256/apps/unetbootin.png
 
-# Policy Kit support for nice root access
-%__mkdir_p %{buildroot}%{_bindir}
-cat >%{buildroot}%{_bindir}/%{name} <<EOF
-#!/bin/sh
-if  [[ "\$UID" != "0" ]] ; then
-    %{_bindir}/pkexec %{_libexecdir}/%{name} "\$@"
-    exit \$?
-fi
-exec %{_libexecdir}/%{name} "\$@"
-EOF
-
 %files
 %doc README.TXT
-%attr(0755,root,root) %{_bindir}/%{name}
-%{_libexecdir}/%{name}
-%{_datadir}/unetbootin/
+%{_sbindir}/*
+%{_datadir}/%{name}
 %{_datadir}/applications/unetbootin.desktop
 %{_datadir}/icons/hicolor/*/*
