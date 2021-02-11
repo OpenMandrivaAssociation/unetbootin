@@ -92,4 +92,3 @@ EOF
 %{_datadir}/unetbootin/
 %{_datadir}/applications/unetbootin.desktop
 %{_datadir}/icons/hicolor/*/*
-%{_sysconfdir}/security/console.apps/%{name}
