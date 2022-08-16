@@ -2,13 +2,16 @@
 
 Name:		unetbootin
 Version:	702
-Release:	2
+Release:	3
 Summary:	Create bootable Live USB drives for a variety of Linux distributions
 Group:		System/Configuration/Hardware
 License:	GPLv2+
 URL:		http://unetbootin.sourceforge.net/
 Source0:	https://github.com/unetbootin/unetbootin/releases/download/%{rel}/unetbootin-source-%{rel}.tar.gz
+Source1:	org.openmandriva.unetbootin.policy
+Source2:	org.openmandriva.unetbootin.rules
 Patch0:         %{name}-desktop.patch
+Patch1:		unetbootin-702-pkexec.patch
 
 BuildRequires:	desktop-file-utils
 BuildRequires:	qt5-linguist-tools
@@ -20,10 +23,10 @@ BuildRequires:  pkgconfig(Qt5Network)
 BuildRequires:  pkgconfig(Qt5Widgets)
 
 # Not picked up automatically, required for operation
-Recommends:	extlinux
 Requires:	p7zip
+Requires:	polkit
+Recommends:	extlinux
 Recommends:	syslinux
-Requires:	usermode
 
 %description
 UNetbootin allows you to create bootable Live USB drives for a variety of
@@ -43,12 +46,12 @@ export QMAKE=%{_bindir}/qmake-qt5
 %{_libdir}/qt5/bin/lrelease *.pro
 qmake-qt5 *.pro
 
-%make
+%make_build
 
 
 %install
 rm -rf %{buildroot} 
-install -D -m 0755 %{name} %{buildroot}%{_sbindir}/%{name}
+install -D -m 0755 %{name} %{buildroot}%{_bindir}/%{name}
 install -d -m 0755 %{buildroot}%{_datadir}/%{name}
 
 install -D -m 0644 %{name}.desktop %{buildroot}%{_datadir}/applications/%{name}.desktop
@@ -68,9 +71,16 @@ install -D -c -p -m 644 unetbootin_128.png %{buildroot}%{_datadir}/icons/hicolor
 install -D -c -p -m 644 unetbootin_192.png %{buildroot}%{_datadir}/icons/hicolor/192x192/apps/unetbootin.png
 install -D -c -p -m 644 unetbootin_256.png %{buildroot}%{_datadir}/icons/hicolor/256x256/apps/unetbootin.png
 
+# PK integration
+mkdir -p %{buildroot}%{_datadir}/polkit-1/{actions,rules.d}
+cp %{S:1} %{buildroot}%{_datadir}/polkit-1/actions/
+cp %{S:2} %{buildroot}%{_datadir}/polkit-1/rules.d/
+
 %files
 %doc README.TXT
-%{_sbindir}/*
+%{_bindir}/*
 %{_datadir}/%{name}
 %{_datadir}/applications/unetbootin.desktop
 %{_datadir}/icons/hicolor/*/*
+%{_datadir}/polkit-1/actions/*
+%{_datadir}/polkit-1/rules.d/*

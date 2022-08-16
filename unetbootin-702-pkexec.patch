@@ -1,0 +1,12 @@
+diff -up unetbootin-702/main.cpp.omv~ unetbootin-702/main.cpp
+--- unetbootin-702/main.cpp.omv~	2022-08-16 19:03:37.410130649 +0200
++++ unetbootin-702/main.cpp	2022-08-16 19:04:49.816413238 +0200
+@@ -295,6 +295,8 @@ int main(int argc, char **argv)
+             argsconc += "\"rootcheck=no\"";
+             argsconcSingleQuote += "'rootcheck=no'";
+ #ifdef Q_OS_LINUX
++	    QProcess::startDetached("/usr/bin/pkexec", QStringList() << "unetbootin" << "rootcheck=no");
++	    return 0;
+             QString gksuarg1;
+             gksuarg1 += QString("bash -c 'QT_X11_NO_MITSHM=1 ");
+             gksuarg1 += QString("%1 %2").arg(app.applicationFilePath()).arg(argsconc);
