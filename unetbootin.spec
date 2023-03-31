@@ -2,7 +2,7 @@
 
 Name:		unetbootin
 Version:	702
-Release:	3
+Release:	4
 Summary:	Create bootable Live USB drives for a variety of Linux distributions
 Group:		System/Configuration/Hardware
 License:	GPLv2+
