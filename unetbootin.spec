@@ -1,13 +1,11 @@
-%global rel 702
-
 Name:		unetbootin
 Version:	702
-Release:	4
+Release:	5
 Summary:	Create bootable Live USB drives for a variety of Linux distributions
 Group:		System/Configuration/Hardware
 License:	GPLv2+
-URL:		http://unetbootin.sourceforge.net/
-Source0:	https://github.com/unetbootin/unetbootin/releases/download/%{rel}/unetbootin-source-%{rel}.tar.gz
+URL:		http://unetbootin.github.io/
+Source0:	https://github.com/unetbootin/unetbootin/releases/download/%{version}/unetbootin-source-%{version}.tar.gz
 Source1:	org.openmandriva.unetbootin.policy
 Source2:	org.openmandriva.unetbootin.rules
 Patch0:         %{name}-desktop.patch
@@ -23,7 +21,7 @@ BuildRequires:  pkgconfig(Qt5Network)
 BuildRequires:  pkgconfig(Qt5Widgets)
 
 # Not picked up automatically, required for operation
-Requires:	p7zip
+Requires:	(7zip or p7zip)
 Requires:	polkit
 Recommends:	extlinux
 Recommends:	syslinux
