@@ -4,7 +4,7 @@ Release:	5
 Summary:	Create bootable Live USB drives for a variety of Linux distributions
 Group:		System/Configuration/Hardware
 License:	GPLv2+
-URL:		http://unetbootin.github.io/
+URL:		https://unetbootin.github.io/
 Source0:	https://github.com/unetbootin/unetbootin/releases/download/%{version}/unetbootin-source-%{version}.tar.gz
 Source1:	org.openmandriva.unetbootin.policy
 Source2:	org.openmandriva.unetbootin.rules
